@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="style.css" rel="stylesheet">
+	<script src="bower_components/cross-storage/dist/hub.js"></script>
+	<script>
+		CrossStorageHub.init([
+			{origin: /cross-domain-localstorage-hub.herokuapp.com$/, allow: ['get', 'set', 'del', 'clear']},
+			{origin: /.*\.herokuapp.com/, allow: ['get', 'set', 'del']},
+			{origin: /localhost/, allow: ['get', 'set']}
+		]);
+	</script>
+</head>
+<body>
+<!--[if lt IE 10]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+
+<h1 class="header">Cross Domain Local Storage Hub</h1>
+</body>
+</html>
