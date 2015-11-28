@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="style.css" rel="stylesheet">
+	<script src="bower_components/cross-storage/dist/client.js"></script>
+	<script type="text/javascript">
+		function init() {
+			var storage = new CrossStorageClient('https://cross-domain-localstorage-hub.herokuapp.com/hub.html', {
+				timeout: 5000,
+				frameId: 'cross-storage-frame'
+			});
+
+			storage
+				.onConnect()
+				.then(function (res) {
+					console.log('storage.onConnect', res);
+					console.log('Cross Local Storage Ready');
+					window.storage = storage;
+				})
+				.catch(function (err) {
+					console.log('storage.onConnect.catch', err);
+					document.getElementById('result').innerHTML = 'Ops, could not connect to the Cross Domain Local Storage Hub. The error is: ' + err;
+				});
+		}
+
+		window.onload = init;
+
+		function setValue() {
+			document.getElementById('result').innerHTML = '';
+			var key = document.getElementById("keyInput").value;
+			if (key) {
+				var value = document.getElementById("valueInput").value;
+				storage
+					.set(key, value)
+					.then(function (res) {
+						console.log('storage.set', res);
+						document.getElementById('result').innerHTML = 'Your data has been successfully stored.';
+					})
+					.catch(function (err) {
+						console.log('storage.set.catch', err);
+						document.getElementById('result').innerHTML = 'Ops, could not store your data. The error is: ' + err;
+					});
+			} else {
+				alert('You must enter a key.');
+			}
+		}
+
+		function getItem() {
+			document.getElementById('result').innerHTML = '';
+			var key = document.getElementById("getInput").value;
+			if (key) {
+				storage
+					.get(key)
+					.then(function (res) {
+						console.log('storage.get', res);
+						document.getElementById('result').innerHTML = 'got value: "' + res + '" for key: "' + key + '"';
+					})
+					.catch(function (err) {
+						console.log('storage.get.catch', err);
+						document.getElementById('result').innerHTML = 'Ops, could not get data for key \'' + key + '\'. The error is: ' + err;
+					});
+			} else {
+				alert('You must enter a key to get.');
+			}
+		}
+
+		function removeItem() {
+			document.getElementById('result').innerHTML = '';
+			var key = document.getElementById("removeInput").value;
+			if (key) {
+				storage
+					.del(key)
+					.then(function (res) {
+						console.log('storage.del', res);
+						document.getElementById('result').innerHTML = 'Key was removed';
+					})
+					.catch(function (err) {
+						console.log('storage.del.catch', err);
+						document.getElementById('result').innerHTML = 'Ops, could not remove the key \'' + key + '\'. The error is: ' + err;
+					});
+			} else {
+				alert('You must enter a key to remove.');
+			}
+		}
+
+		function clearAll() {
+			document.getElementById('result').innerHTML = '';
+			storage
+				.clear()
+				.then(function (res) {
+					console.log('storage.clear', res);
+					document.getElementById('result').innerHTML = 'LocalStorage was cleared.';
+				})
+				.catch(function (err) {
+					console.log('storage.clear.catch', err);
+					document.getElementById('result').innerHTML = 'Ops, could not the storate. The error is: ' + err;
+				});
+		}
+	</script>
+</head>
+<body>
+<h1 class="header">Cross Domain Local Storage Client</h1>
+
+<div class="content">
+	<div>
+		<div class="label">Enter key name:</div>
+		<input id="keyInput" type="text"/></div>
+	<div>
+		<div class="label">Enter value:</div>
+		<input id="valueInput" type="text"/></div>
+	<button onclick="setValue()">Set Value</button>
+	<div>
+		<div class="label">Enter key to get:</div>
+		<input id="getInput" type="text"/></div>
+	<button onclick="getItem()">Get Key</button>
+	<div>
+		<div class="label">Enter key to remove:</div>
+		<input id="removeInput" type="text"/></div>
+	<button onclick="removeItem()">Remove Key</button>
+	<div>
+		<button onclick="clearAll()">Clear all</button>
+	</div>
+	<div>
+		<div class="label">Result:</div>
+		<div id="result"></div>
+	</div>
+</div>
+</body>
+</html>
